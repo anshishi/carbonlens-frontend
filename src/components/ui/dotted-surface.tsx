@@ -22,18 +22,16 @@ export function DottedSurface() {
     let count = 0;
 
     const width = containerRef.current.clientWidth || window.innerWidth;
-    const height = containerRef.current.clientHeight || 600;
+    const height = containerRef.current.clientHeight || window.innerHeight;
 
     // Perspective Camera setup
     camera = new THREE.PerspectiveCamera(75, width / height, 1, 10000);
-    camera.position.z = 1200;
-    camera.position.y = 450;
-    camera.position.x = 0;
-    camera.rotation.x = -Math.PI / 6; // Angled downwards for 3D perspective
+    camera.position.set(0, 500, 1100);
+    camera.lookAt(0, 0, 0);
 
     scene = new THREE.Scene();
     scene.background = null; // Transparent scene background to merge with CSS bg
-    scene.fog = new THREE.FogExp2(0x0a0f0d, 0.0006); // Fade particles into deep green-black
+    scene.fog = new THREE.Fog(0x0a0f0d, 500, 2200); // Softer linear fog to keep particles visible
 
     const numParticles = AMOUNTX * AMOUNTY;
     const positions = new Float32Array(numParticles * 3);
@@ -58,9 +56,9 @@ export function DottedSurface() {
     // Points Material using glowing teal-green color (#2dd4a7)
     const material = new THREE.PointsMaterial({
       color: 0x2dd4a7,
-      size: 5,
+      size: 11,
       transparent: true,
-      opacity: 0.5,
+      opacity: 0.85,
       sizeAttenuation: true
     });
 
@@ -71,12 +69,20 @@ export function DottedSurface() {
     renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.setSize(width, height);
+    
+    // Style renderer DOM element to stretch absolutely to fill container boundaries
+    renderer.domElement.style.position = "absolute";
+    renderer.domElement.style.top = "0";
+    renderer.domElement.style.left = "0";
+    renderer.domElement.style.width = "100%";
+    renderer.domElement.style.height = "100%";
+    
     containerRef.current.appendChild(renderer.domElement);
 
     const onWindowResize = () => {
       if (!containerRef.current) return;
       const w = containerRef.current.clientWidth || window.innerWidth;
-      const h = containerRef.current.clientHeight || 600;
+      const h = containerRef.current.clientHeight || window.innerHeight;
       camera.aspect = w / h;
       camera.updateProjectionMatrix();
       renderer.setSize(w, h);
@@ -128,7 +134,7 @@ export function DottedSurface() {
   return (
     <div
       ref={containerRef}
-      className="absolute inset-0 w-full h-full -z-10 overflow-hidden pointer-events-none opacity-45"
+      className="absolute inset-0 w-full h-full z-0 overflow-hidden pointer-events-none opacity-45"
       style={{ minHeight: "100vh" }}
     />
   );

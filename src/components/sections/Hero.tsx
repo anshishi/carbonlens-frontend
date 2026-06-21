@@ -21,7 +21,7 @@ export function Hero() {
       {/* 3D Particle wave background */}
       <DottedSurface />
 
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#0a0f0d]/10 to-[#0a0f0d] pointer-events-none -z-10" />
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#0a0f0d]/10 to-[#0a0f0d] pointer-events-none z-0" />
 
       <motion.div
         initial={{ opacity: 0, y: 30 }}
